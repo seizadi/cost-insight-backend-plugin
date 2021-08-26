@@ -11,7 +11,7 @@ import {
 
 type Options = {
     discoveryApi: DiscoveryApi;
-    proxyPathBase?: string; // Path to use for requests via the proxy
+    proxyPathBase?: string;
 };
 
 type Date = {
