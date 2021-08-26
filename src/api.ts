@@ -1,4 +1,3 @@
-import { DiscoveryApi } from '@backstage/core';
 import {
     Alert,
     Cost,
@@ -8,11 +7,6 @@ import {
     ProductInsightsOptions,
     Project,
 } from "@backstage/plugin-cost-insights";
-
-type Options = {
-    discoveryApi: DiscoveryApi;
-    proxyPathBase?: string;
-};
 
 type Date = {
     date: string;
@@ -33,18 +27,14 @@ export class FetchError extends Error {
 }
 
 export class CostInsightsClient implements CostInsightsApi {
-    private readonly discoveryApi: DiscoveryApi;
     private readonly proxyPathBase: string | undefined;
 
-    constructor(options: Options) {
-        this.discoveryApi = options.discoveryApi;
-        this.proxyPathBase = options.proxyPathBase ?? '' // Default if undefined;
+    constructor() {
+        this.proxyPathBase = '/api/proxy/'
     }
 
-    private async getApiUrl( path: string) {
-        const proxyUrl = await this.discoveryApi.getBaseUrl('proxy');
-        console.log(proxyUrl);
-        return `${proxyUrl}${this.proxyPathBase}/cost-insight-backend/v1/${path}`;
+    private getApiUrl( path: string) {
+        return `${this.proxyPathBase}/cost-insight-backend/v1/${path}`;
     }
 
     // private request(_: any, res: any): Promise<any> {
@@ -52,7 +42,7 @@ export class CostInsightsClient implements CostInsightsApi {
     // }
 
     private async fetch<T = any>(input: string, init?: RequestInit): Promise<T> {
-        const url = await this.getApiUrl(input);
+        const url = this.getApiUrl(input);
         console.log(url);
         const resp = await fetch(url, init);
         if (!resp.ok) throw await FetchError.forResponse(resp);
