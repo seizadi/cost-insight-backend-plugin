@@ -2,15 +2,12 @@ import {
     Alert,
     Cost,
     CostInsightsApi, Entity,
+    DateAggregation,
     Group,
     MetricData,
     ProductInsightsOptions,
     Project,
 } from "@backstage/plugin-cost-insights";
-
-type Date = {
-    date: string;
-}
 
 export class FetchError extends Error {
     get name(): string {
@@ -50,13 +47,13 @@ export class CostInsightsClient implements CostInsightsApi {
         return await resp.json();
     }
 
-    private async getDate(resp: Promise<Date>): Promise<string> {
+    private async getDate(resp: Promise<DateAggregation>): Promise<string> {
         console.log(resp)
         return await resp.then((resp) => resp.date);
     }
 
     getLastCompleteBillingDate(): Promise<string> {
-        return this.getDate(this.fetch<Date>(
+        return this.getDate(this.fetch<DateAggregation>(
             'last_complete_billing_date',
         ));
     }
